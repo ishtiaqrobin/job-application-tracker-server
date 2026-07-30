@@ -1,0 +1,61 @@
+model JobApplication {
+  id                  String            @id @default(cuid())
+  userId              String
+  user                User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  companyId           String?
+  company             Company?          @relation(fields: [companyId], references: [id])
+  companyNameSnapshot String            // company delete হলেও নাম থাকুক
+
+  position            String
+  jobLink             String?
+  jobLocation         String?
+
+  jobNature           JobNature         @default(FULL_TIME)
+  workMode            WorkMode          @default(ONSITE)
+  experienceLevel     ExperienceLevel?
+
+  status              ApplicationStatus @default(APPLIED)
+  priority            Priority          @default(MEDIUM)
+  source              ApplicationSource @default(OTHER)
+
+  appliedDate         DateTime          @default(now())
+  deadline            DateTime?
+  followUpDate        DateTime?
+
+  salaryRangeMin       Int?
+  salaryRangeMax       Int?
+  currency             String?          @default("BDT")
+  offerAmount          Int?
+
+  techStack           String[]
+  rejectionReason     String?
+  hasTakeHome         Boolean           @default(false)
+  takeHomeNotes       String?
+  followUpCount       Int               @default(0)
+
+  resumeDriveLink     String?
+  coverLetterLink     String?
+
+  comments            String?
+  notes               String?           @db.Text
+
+  isReferral          Boolean           @default(false)
+  referredBy          String?
+
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  contacts            Contact[]
+  interviews          Interview[]
+  followUps           FollowUp[]
+  documents           Document[]
+  activityLogs        ActivityLog[]
+  reminders           Reminder[]
+  tags                Tag[]             @relation("JobApplicationTags")
+
+  @@index([userId, status])
+  @@index([userId, createdAt])
+  @@index([companyId])
+  @@index([deadline])
+}

@@ -1,0 +1,17 @@
+model Company {
+    id        String   @id @default(cuid())
+    name      String
+    website   String?
+    location  String?
+    industry  String?
+    logoUrl   String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    applications JobApplication[]
+    contacts     Contact[]
+
+    @@unique([name])
+    @@index([industry])
+    @@index([location])
+}

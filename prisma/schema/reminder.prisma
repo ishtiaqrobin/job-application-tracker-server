@@ -1,0 +1,17 @@
+model Reminder {
+    id     String @id @default(cuid())
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    jobApplicationId String?
+    jobApplication   JobApplication? @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
+
+    title       String
+    remindAt    DateTime
+    isCompleted Boolean  @default(false)
+
+    createdAt DateTime @default(now())
+
+    @@index([userId, remindAt])
+    @@index([jobApplicationId])
+}

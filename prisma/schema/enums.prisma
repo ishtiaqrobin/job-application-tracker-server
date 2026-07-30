@@ -1,0 +1,90 @@
+// Role Enum
+enum Role {
+    USER
+    ADMIN
+}
+
+// User Status Enum
+enum UserStatus {
+    ACTIVE
+    BLOCKED
+    DELETED
+}
+
+enum JobNature {
+    FULL_TIME
+    PART_TIME
+    CONTRACT
+    INTERNSHIP
+    FREELANCE
+}
+
+enum WorkMode {
+    ONSITE
+    REMOTE
+    HYBRID
+}
+
+enum ExperienceLevel {
+    ENTRY
+    MID
+    SENIOR
+    LEAD
+}
+
+enum ApplicationStatus {
+    WISHLIST
+    APPLIED
+    SHORT_LISTED
+    OA_TEST       // Online Assessment
+    ON_TASK       // Take-home assignment / task
+    INTERVIEW
+    ON_FOLLOW_UP
+    ON_SECOND_FOLLOW_UP
+    OFFER
+    ACCEPTED
+    REJECTED
+    WITHDRAWN
+    NO_RESPONSE
+}
+
+enum Priority {
+    LOW
+    MEDIUM
+    HIGH
+}
+
+enum ApplicationSource {
+    LINKEDIN
+    FACEBOOK
+    EMAIL
+    COMPANY_WEBSITE
+    BDJOBS
+    REFERRAL
+    RECRUITER_OUTREACH
+    OTHER
+}
+
+enum InterviewRound {
+    PHONE_SCREEN
+    TECHNICAL
+    SYSTEM_DESIGN
+    HR
+    MANAGERIAL
+    FINAL
+    OTHER
+}
+
+enum InterviewResult {
+    PENDING
+    PASSED
+    FAILED
+    CANCELLED
+}
+
+enum DocumentType {
+    RESUME
+    COVER_LETTER
+    PORTFOLIO
+    OTHER
+}

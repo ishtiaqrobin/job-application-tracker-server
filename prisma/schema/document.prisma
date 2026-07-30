@@ -1,0 +1,12 @@
+model Document {
+    id               String         @id @default(cuid())
+    jobApplicationId String
+    jobApplication   JobApplication @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
+
+    type      DocumentType
+    fileUrl   String
+    version   Int          @default(1)
+    createdAt DateTime     @default(now())
+
+    @@index([jobApplicationId])
+}

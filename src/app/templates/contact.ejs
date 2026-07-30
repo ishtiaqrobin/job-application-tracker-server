@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Contact Form Submission - Ishtiaq Robin</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f4f4f5;
+            color: #18181b;
+            line-height: 1.6;
+        }
+
+        .wrapper {
+            padding: 48px 20px;
+        }
+
+        .container {
+            max-width: 560px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid #e4e4e7;
+        }
+
+        /* ── Top bar ── */
+        .header {
+            background-color: #111116;
+            padding: 28px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-brand {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+        }
+
+        .header-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            margin-left: 8px;
+            background-color: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #10b981;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        /* ── Content ── */
+        .content {
+            padding: 40px 32px;
+        }
+
+        .eyebrow {
+            font-size: 11px;
+            font-weight: 600;
+            color: #10b981;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #111116;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+        }
+
+        /* ── Field rows ── */
+        .fields {
+            background-color: #fafafa;
+            border: 1px solid #e4e4e7;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .field {
+            padding: 14px 18px;
+            border-bottom: 1px solid #f4f4f5;
+        }
+
+        .field:last-child {
+            border-bottom: none;
+        }
+
+        .field-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #a1a1aa;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 4px;
+        }
+
+        .field-value {
+            font-size: 14px;
+            color: #18181b;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .field-value.message {
+            font-weight: 400;
+            color: #3f3f46;
+            white-space: pre-wrap;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            padding: 20px 32px 28px;
+            border-top: 1px solid #f4f4f5;
+            text-align: center;
+            font-size: 12px;
+            color: #a1a1aa;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .wrapper {
+                padding: 0;
+            }
+
+            .container {
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+            }
+
+            .header,
+            .content {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="container">
+
+            <div class="header">
+                <span class="header-brand">Ishtiaq Robin</span>
+                <span class="header-badge">New Message</span>
+            </div>
+
+            <div class="content">
+                <p class="eyebrow">Contact Form</p>
+                <h1 class="title">New Contact Form Submission</h1>
+
+                <div class="fields">
+                    <div class="field">
+                        <p class="field-label">Name</p>
+                        <p class="field-value">
+                            <%= name %>
+                        </p>
+                    </div>
+                    <div class="field">
+                        <p class="field-label">Email</p>
+                        <p class="field-value">
+                            <%= email %>
+                        </p>
+                    </div>
+                    <div class="field">
+                        <p class="field-label">Subject</p>
+                        <p class="field-value">
+                            <%= subject %>
+                        </p>
+                    </div>
+                    <div class="field">
+                        <p class="field-label">Message</p>
+                        <p class="field-value message">
+                            <%= message || 'No message provided' %>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>Sent from the contact form on Ishtiaq Robin's Portfolio.</p>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

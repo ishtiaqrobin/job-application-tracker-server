@@ -1,0 +1,14 @@
+model ActivityLog {
+    id               String         @id @default(cuid())
+    jobApplicationId String
+    jobApplication   JobApplication @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
+
+    fromStatus ApplicationStatus?
+    toStatus   ApplicationStatus
+    note       String?
+    createdAt  DateTime           @default(now())
+
+    @@index([jobApplicationId, createdAt])
+}
+
+

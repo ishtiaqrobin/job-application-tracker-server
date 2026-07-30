@@ -1,0 +1,11 @@
+model Tag {
+    id     String  @id @default(cuid())
+    userId String
+    user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    name   String
+    color  String? @default("#3B82F6")
+
+    applications JobApplication[] @relation("JobApplicationTags")
+
+    @@unique([userId, name])
+}

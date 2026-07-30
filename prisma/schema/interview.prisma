@@ -1,0 +1,19 @@
+model Interview {
+  id                String          @id @default(cuid())
+  jobApplicationId  String
+  jobApplication    JobApplication  @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
+
+  round             InterviewRound
+  scheduledAt       DateTime?
+  duration          Int?            // minutes
+  location          String?         // "Zoom link" / "Office address"
+  interviewerNames  String[]
+  feedback          String?         @db.Text
+  result            InterviewResult @default(PENDING)
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([jobApplicationId])
+  @@index([jobApplicationId, scheduledAt])
+}
