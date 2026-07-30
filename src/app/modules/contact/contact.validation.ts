@@ -1,17 +1,23 @@
-import { ContactStatus } from "../../../generated/prisma";
 import { z } from "zod";
 
 const createContactZodSchema = z.object({
-  name: z.string("Name is required"),
-  email: z.string("Email is required").email("Invalid email format"),
-  subject: z.string("Subject is required"),
-  message: z.string().optional(),
-  ipAddress: z.string().optional(),
+  companyId: z.string().optional(),
+  jobApplicationId: z.string().optional(),
+  name: z.string("Contact name is required"),
+  role: z.string().optional(),
+  email: z.string().email().optional(),
+  phone: z.string().optional(),
+  linkedin: z.string().url().optional(),
 });
 
 const updateContactZodSchema = z.object({
-  status: z.nativeEnum(ContactStatus).optional(),
-  adminNote: z.string().optional(),
+  companyId: z.string().optional(),
+  jobApplicationId: z.string().optional(),
+  name: z.string().optional(),
+  role: z.string().optional(),
+  email: z.string().email().optional(),
+  phone: z.string().optional(),
+  linkedin: z.string().url().optional(),
 });
 
 export const ContactValidation = {

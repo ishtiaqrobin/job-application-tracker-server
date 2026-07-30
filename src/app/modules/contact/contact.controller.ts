@@ -1,14 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { ContactService } from "./contact.service";
 
-// Create contact (public)
-const createContact = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const createContact = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await ContactService.createContact(req.body);
+    const userId = req.user!.id;
+    const result = await ContactService.createContact(userId, req.body);
 
     res.status(201).json({
       success: true,
@@ -20,18 +16,14 @@ const createContact = async (
   }
 };
 
-// Get all contacts (admin)
-const getAllContacts = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const getAllContacts = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await ContactService.getAllContacts(req.query as any);
+    const userId = req.user!.id;
+    const result = await ContactService.getAllContacts(userId, req.query as any);
 
     res.status(200).json({
       success: true,
-      message: "Retrieved all contacts successfully",
+      message: "Contacts retrieved successfully",
       data: result,
     });
   } catch (err) {
@@ -39,19 +31,14 @@ const getAllContacts = async (
   }
 };
 
-// Get a single contact by ID (admin)
-const getContactById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const getContactById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const id = req.params.id;
-    const result = await ContactService.getContactById(id as string);
+    const userId = req.user!.id;
+    const result = await ContactService.getContactById(req.params.id as string, userId);
 
     res.status(200).json({
       success: true,
-      message: "Retrieved contact successfully",
+      message: "Contact retrieved successfully",
       data: result,
     });
   } catch (err) {
@@ -59,34 +46,10 @@ const getContactById = async (
   }
 };
 
-// Get contact stats grouped by status (admin)
-const getContactStats = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const updateContact = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await ContactService.getContactStats();
-
-    res.status(200).json({
-      success: true,
-      message: "Retrieved contact stats successfully",
-      data: result,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
-// Update contact status / admin note (admin)
-const updateContact = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const id = req.params.id;
-    const result = await ContactService.updateContact(id as string, req.body);
+    const userId = req.user!.id;
+    const result = await ContactService.updateContact(req.params.id as string, userId, req.body);
 
     res.status(200).json({
       success: true,
@@ -98,15 +61,10 @@ const updateContact = async (
   }
 };
 
-// Delete a contact (admin)
-const deleteContact = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const deleteContact = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const id = req.params.id;
-    await ContactService.deleteContact(id as string);
+    const userId = req.user!.id;
+    await ContactService.deleteContact(req.params.id as string, userId);
 
     res.status(200).json({
       success: true,
@@ -122,7 +80,6 @@ export const ContactController = {
   createContact,
   getAllContacts,
   getContactById,
-  getContactStats,
   updateContact,
   deleteContact,
 };

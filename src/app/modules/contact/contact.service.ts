@@ -1,90 +1,68 @@
-import { env } from "../../config/env";
 import httpStatus from "http-status";
 import AppError from "../../errorHelpers/AppError";
 import { prisma } from "../../lib/prisma";
-import { sendEmail } from "../../utils/email";
 import {
   ContactQueryInput,
   CreateContactInput,
   UpdateContactInput,
 } from "./contact.interface";
 
-// Allowed email domains whitelist
-const ALLOWED_DOMAINS = [
-  "gmail.com",
-  "outlook.com",
-  "hotmail.com",
-  "yahoo.com",
-  "icloud.com",
-  "proton.me",
-  "protonmail.com",
-  "zoho.com",
-  "aol.com",
-  "gmx.com",
-  "gmx.net",
-  "yandex.com",
-  "mail.com",
-];
-
-// Create contact (public)
-const createContact = async (payload: CreateContactInput) => {
-  const emailDomain = payload.email.split("@")[1]?.toLowerCase();
-
-  if (!ALLOWED_DOMAINS.includes(emailDomain as string)) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      "We only accept emails from trusted providers (Gmail, Outlook, Yahoo, etc.). Please use a valid email address.",
-    );
-  }
+const createContact = async (userId: string, payload: CreateContactInput) => {
+  const { companyId, jobApplicationId, name, role, email, phone, linkedin } = payload;
 
   const result = await prisma.contact.create({
-    data: payload,
-  });
-
-  // Send email notification
-  await sendEmail({
-    to: env.CONTACT_RECEIVER_EMAIL,
-    subject: `New Contact: ${payload.subject}`,
-    templateName: "contact",
-    templateData: {
-      name: payload.name,
-      email: payload.email,
-      subject: payload.subject,
-      message: payload.message,
+    data: {
+      userId,
+      name,
+      ...(companyId !== undefined && { companyId }),
+      ...(jobApplicationId !== undefined && { jobApplicationId }),
+      ...(role !== undefined && { role }),
+      ...(email !== undefined && { email }),
+      ...(phone !== undefined && { phone }),
+      ...(linkedin !== undefined && { linkedin }),
+    },
+    include: {
+      company: { select: { id: true, name: true } },
     },
   });
 
   return result;
 };
 
-// Get all contacts with optional filters (admin)
-const getAllContacts = async (query: ContactQueryInput) => {
-  const { status, startDate, endDate } = query;
+const getAllContacts = async (userId: string, query: ContactQueryInput) => {
+  const { search, companyId, jobApplicationId } = query;
 
   const result = await prisma.contact.findMany({
     where: {
-      ...(status && { status }),
-      ...(startDate || endDate
-        ? {
-            createdAt: {
-              ...(startDate && { gte: new Date(startDate) }),
-              ...(endDate && { lte: new Date(endDate) }),
-            },
-          }
-        : {}),
+      userId,
+      ...(companyId && { companyId }),
+      ...(jobApplicationId && { jobApplicationId }),
+      ...(search && {
+        OR: [
+          { name: { contains: search, mode: "insensitive" } },
+          { role: { contains: search, mode: "insensitive" } },
+          { email: { contains: search, mode: "insensitive" } },
+        ],
+      }),
     },
-    orderBy: {
-      createdAt: "desc",
+    include: {
+      company: { select: { id: true, name: true } },
     },
+    orderBy: { createdAt: "desc" },
   });
 
   return result;
 };
 
-// Get a single contact by ID (admin)
-const getContactById = async (id: string) => {
-  const result = await prisma.contact.findUnique({
-    where: { id },
+const getContactById = async (id: string, userId: string) => {
+  const result = await prisma.contact.findFirst({
+    where: { id, userId },
+    include: {
+      company: { select: { id: true, name: true } },
+      jobApplication: {
+        select: { id: true, position: true, companyNameSnapshot: true },
+      },
+    },
   });
 
   if (!result) {
@@ -94,52 +72,40 @@ const getContactById = async (id: string) => {
   return result;
 };
 
-// Get contact stats grouped by status (admin)
-const getContactStats = async () => {
-  const result = await prisma.contact.groupBy({
-    by: ["status"],
-    _count: {
-      id: true,
-    },
-    orderBy: {
-      _count: {
-        id: "desc",
-      },
-    },
-  });
+const updateContact = async (id: string, userId: string, payload: UpdateContactInput) => {
+  await getContactById(id, userId);
 
-  return result.map((item) => ({
-    status: item.status,
-    total: item._count.id,
-  }));
-};
-
-// Update contact status / admin note (admin)
-const updateContact = async (id: string, payload: UpdateContactInput) => {
-  await getContactById(id); // ensure it exists
+  const { companyId, jobApplicationId, name, role, email, phone, linkedin } = payload;
 
   const result = await prisma.contact.update({
     where: { id },
-    data: payload,
+    data: {
+      ...(name !== undefined && { name }),
+      ...(companyId !== undefined && { companyId }),
+      ...(jobApplicationId !== undefined && { jobApplicationId }),
+      ...(role !== undefined && { role }),
+      ...(email !== undefined && { email }),
+      ...(phone !== undefined && { phone }),
+      ...(linkedin !== undefined && { linkedin }),
+    },
+    include: {
+      company: { select: { id: true, name: true } },
+    },
   });
 
   return result;
 };
 
-// Delete a contact (admin)
-const deleteContact = async (id: string) => {
-  await getContactById(id); // ensure it exists
+const deleteContact = async (id: string, userId: string) => {
+  await getContactById(id, userId);
 
-  await prisma.contact.delete({
-    where: { id },
-  });
+  await prisma.contact.delete({ where: { id } });
 };
 
 export const ContactService = {
   createContact,
   getAllContacts,
   getContactById,
-  getContactStats,
   updateContact,
   deleteContact,
 };
