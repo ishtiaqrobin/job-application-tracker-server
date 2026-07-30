@@ -10,7 +10,7 @@ async function main() {
 
     app.listen(PORT, () => {
       console.log(
-        `Ishtiaq Robin Backend is running on http://localhost:${PORT}`,
+        `Job Application Tracker Backend is running on http://localhost:${PORT}`,
       );
     });
   } catch (error) {

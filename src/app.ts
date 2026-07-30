@@ -47,7 +47,7 @@ app.use("/api/v1", globalLimiter, IndexRoutes);
 
 // ── Root Route
 app.get("/", (_req: Request, res: Response) => {
-  res.send("Ishtiaq Robin Portfolio Backend is running");
+  res.send("Job Application Tracker Backend is running");
 });
 
 // ── Health Check Route
