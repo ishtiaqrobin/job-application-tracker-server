@@ -13,7 +13,7 @@ cloudinary.config({
 export const uploadFileToCloudinary = (
   buffer: Buffer,
   fileName: string,
-  folder: "about" | "projects" | "profiles" | "blogs" | "experiences",
+  folder: "documents" | "profiles",
 ): Promise<UploadApiResponse> => {
   if (!buffer || !fileName) {
     throw new AppError(

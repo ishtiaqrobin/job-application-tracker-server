@@ -29,11 +29,6 @@ interface EnvConfig {
     API_KEY: string;
     API_SECRET: string;
   };
-  IPINFO_TOKEN?: string;
-  CHATBOT: {
-    RATE_LIMIT: number; // per window এ max request
-    RATE_LIMIT_WINDOW: number; // seconds
-  };
 }
 
 const loadEnvVariables = (): EnvConfig => {
@@ -59,7 +54,6 @@ const loadEnvVariables = (): EnvConfig => {
     "CLOUDINARY_CLOUD_NAME",
     "CLOUDINARY_API_KEY",
     "CLOUDINARY_API_SECRET",
-    "IPINFO_TOKEN",
   ];
 
   requireEnvVariable.forEach((variable) => {
@@ -100,12 +94,6 @@ const loadEnvVariables = (): EnvConfig => {
       CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
       API_KEY: process.env.CLOUDINARY_API_KEY as string,
       API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
-    },
-    IPINFO_TOKEN: process.env.IPINFO_TOKEN as string,
-    CHATBOT: {
-      // .env এ না থাকলে safe defaults — 10 req per 60s
-      RATE_LIMIT: Number(process.env.CHATBOT_RATE_LIMIT) || 10,
-      RATE_LIMIT_WINDOW: Number(process.env.CHATBOT_RATE_LIMIT_WINDOW) || 60,
     },
   };
 };

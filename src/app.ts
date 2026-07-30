@@ -4,18 +4,12 @@ import { auth } from "./app/lib/auth";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import path from "path";
-// import { handler as ipinfo } from "express-ipinfo";
-
 import { env } from "./app/config/env";
 import { IndexRoutes } from "./app/routes";
 import { notFound } from "./app/middlewares/notFound";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import { globalLimiter, authLimiter } from "./app/middlewares/rateLimiter";
 
-// ── Loggers
-import { successLogger } from "./app/middlewares/logger/success.logger";
-import { errorLogger } from "./app/middlewares/logger/error.logger";
-import { pageviewLogger } from "./app/middlewares/logger/pageview.logger";
 import { prisma } from "./app/lib/prisma";
 import { HealthRoutes } from "./app/modules/health/health.route";
 
@@ -43,15 +37,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-// ── IP Geolocation (pageview ও resume-download logger-এ country/city পাওয়ার জন্য)
-// .env-তে IPINFO_TOKEN সেট করতে হবে — https://ipinfo.io/signup
-// app.use(ipinfo({ token: env.IPINFO_TOKEN }));
-
-// ── Global Loggers
-// app.use(successLogger);
-// app.use(errorLogger);
-// app.use(pageviewLogger);
 
 // ── Auth Routes (Better Auth — logger-এর পরে রাখতে হবে)
 // Stricter limiter to mitigate brute-force / credential stuffing.

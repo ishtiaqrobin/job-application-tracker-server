@@ -64,15 +64,6 @@ export const auth = betterAuth({
         required: true,
         defaultValue: false,
       },
-      isReviewed: {
-        type: "boolean",
-        required: true,
-        defaultValue: false,
-      },
-      reviewId: {
-        type: "string",
-        required: false,
-      },
     },
   },
 
