@@ -52,7 +52,10 @@ const createApplication = async (userId: string, payload: CreateApplicationInput
 };
 
 const getAllApplications = async (userId: string, query: ApplicationQueryInput) => {
-  const { status, priority, source, workMode, jobNature, search, startDate, endDate, page = 1, limit = 20 } = query;
+  const { status, priority, source, workMode, jobNature, search, startDate, endDate } = query;
+
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 20;
 
   const skip = (page - 1) * limit;
 
