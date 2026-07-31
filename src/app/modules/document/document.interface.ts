@@ -6,3 +6,10 @@ export interface CreateDocumentInput {
   fileUrl: string;
   version?: number;
 }
+
+export interface DocumentQueryInput {
+  search?: string;
+  type?: DocumentType;
+  page?: number;
+  limit?: number;
+}

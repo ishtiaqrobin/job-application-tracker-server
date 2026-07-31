@@ -29,9 +29,25 @@ const getDocumentsByApplication = async (req: Request, res: Response, next: Next
   }
 };
 
+const getAllDocuments = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user!.id;
+    const result = await DocumentService.getAllDocuments(userId, req.query as any);
+
+    res.status(200).json({
+      success: true,
+      message: "Documents retrieved successfully",
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const deleteDocument = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await DocumentService.deleteDocument(req.params.id as string);
+    const userId = req.user!.id;
+    await DocumentService.deleteDocument(req.params.id as string, userId);
 
     res.status(200).json({
       success: true,
@@ -46,5 +62,6 @@ const deleteDocument = async (req: Request, res: Response, next: NextFunction) =
 export const DocumentController = {
   createDocument,
   getDocumentsByApplication,
+  getAllDocuments,
   deleteDocument,
 };

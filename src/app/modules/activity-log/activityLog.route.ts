@@ -10,4 +10,6 @@ router.get(
   ActivityLogController.getLogsByApplication,
 );
 
+router.get("/", auth(UserRole.ADMIN, UserRole.USER), ActivityLogController.getAllLogs);
+
 export const ActivityLogRouter: Router = router;

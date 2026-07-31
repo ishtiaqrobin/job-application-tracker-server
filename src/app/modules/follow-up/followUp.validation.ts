@@ -7,6 +7,13 @@ const createFollowUpZodSchema = z.object({
   response: z.string().optional(),
 });
 
+const updateFollowUpZodSchema = z.object({
+  contactedAt: z.string().datetime().optional(),
+  note: z.string().optional(),
+  response: z.string().optional(),
+});
+
 export const FollowUpValidation = {
   createFollowUpZodSchema,
+  updateFollowUpZodSchema,
 };

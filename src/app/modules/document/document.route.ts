@@ -19,6 +19,8 @@ router.get(
   DocumentController.getDocumentsByApplication,
 );
 
+router.get("/", auth(UserRole.ADMIN, UserRole.USER), DocumentController.getAllDocuments);
+
 router.delete("/:id", auth(UserRole.ADMIN, UserRole.USER), DocumentController.deleteDocument);
 
 export const DocumentRouter: Router = router;

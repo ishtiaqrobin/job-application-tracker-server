@@ -29,9 +29,55 @@ const getFollowUpsByApplication = async (req: Request, res: Response, next: Next
   }
 };
 
+const getAllFollowUps = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user!.id;
+    const result = await FollowUpService.getAllFollowUps(userId, req.query as any);
+
+    res.status(200).json({
+      success: true,
+      message: "Follow-ups retrieved successfully",
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getFollowUpById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user!.id;
+    const result = await FollowUpService.getFollowUpById(req.params.id as string, userId);
+
+    res.status(200).json({
+      success: true,
+      message: "Follow-up retrieved successfully",
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const updateFollowUp = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user!.id;
+    const result = await FollowUpService.updateFollowUp(req.params.id as string, userId, req.body);
+
+    res.status(200).json({
+      success: true,
+      message: "Follow-up updated successfully",
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const deleteFollowUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await FollowUpService.deleteFollowUp(req.params.id as string);
+    const userId = req.user!.id;
+    await FollowUpService.deleteFollowUp(req.params.id as string, userId);
 
     res.status(200).json({
       success: true,
@@ -46,5 +92,8 @@ const deleteFollowUp = async (req: Request, res: Response, next: NextFunction) =
 export const FollowUpController = {
   createFollowUp,
   getFollowUpsByApplication,
+  getAllFollowUps,
+  getFollowUpById,
+  updateFollowUp,
   deleteFollowUp,
 };

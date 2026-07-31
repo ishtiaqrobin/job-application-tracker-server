@@ -10,6 +10,40 @@ import {
 const stripUndefined = <T extends Record<string, unknown>>(obj: T): T =>
   Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== undefined)) as T;
 
+const syncDocuments = async (
+  jobApplicationId: string,
+  links: { resumeDriveLink?: string | undefined; coverLetterLink?: string | undefined },
+) => {
+  const entries = [
+    { type: "RESUME" as const, link: links.resumeDriveLink },
+    { type: "COVER_LETTER" as const, link: links.coverLetterLink },
+  ];
+
+  for (const { type, link } of entries) {
+    if (!link) continue;
+
+    const existing = await prisma.document.findFirst({
+      where: { jobApplicationId, type, fileUrl: link },
+    });
+    if (existing) continue;
+
+    const latest = await prisma.document.findFirst({
+      where: { jobApplicationId, type },
+      orderBy: { version: "desc" },
+      select: { version: true },
+    });
+
+    await prisma.document.create({
+      data: {
+        jobApplicationId,
+        type,
+        fileUrl: link,
+        version: (latest?.version ?? 0) + 1,
+      },
+    });
+  }
+};
+
 const createApplication = async (userId: string, payload: CreateApplicationInput) => {
   const { tagIds, ...data } = payload;
 
@@ -46,6 +80,11 @@ const createApplication = async (userId: string, payload: CreateApplicationInput
       toStatus: result.status,
       note: "Application created",
     },
+  });
+
+  await syncDocuments(result.id, {
+    resumeDriveLink: data.resumeDriveLink,
+    coverLetterLink: data.coverLetterLink,
   });
 
   return result;
@@ -166,6 +205,11 @@ const updateApplication = async (id: string, userId: string, payload: UpdateAppl
       },
     });
   }
+
+  await syncDocuments(id, {
+    resumeDriveLink: data.resumeDriveLink,
+    coverLetterLink: data.coverLetterLink,
+  });
 
   return result;
 };

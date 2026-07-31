@@ -19,6 +19,17 @@ router.get(
   FollowUpController.getFollowUpsByApplication,
 );
 
+router.get("/", auth(UserRole.ADMIN, UserRole.USER), FollowUpController.getAllFollowUps);
+
+router.get("/:id", auth(UserRole.ADMIN, UserRole.USER), FollowUpController.getFollowUpById);
+
+router.patch(
+  "/:id",
+  auth(UserRole.ADMIN, UserRole.USER),
+  validateRequest(FollowUpValidation.updateFollowUpZodSchema),
+  FollowUpController.updateFollowUp,
+);
+
 router.delete("/:id", auth(UserRole.ADMIN, UserRole.USER), FollowUpController.deleteFollowUp);
 
 export const FollowUpRouter: Router = router;
