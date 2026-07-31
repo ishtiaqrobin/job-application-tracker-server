@@ -29,9 +29,40 @@ const getInterviewsByApplication = async (req: Request, res: Response, next: Nex
   }
 };
 
+const getAllInterviews = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user!.id;
+    const result = await InterviewService.getAllInterviews(userId, req.query as any);
+
+    res.status(200).json({
+      success: true,
+      message: "Interviews retrieved successfully",
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getInterviewById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user!.id;
+    const result = await InterviewService.getInterviewById(req.params.id as string, userId);
+
+    res.status(200).json({
+      success: true,
+      message: "Interview retrieved successfully",
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const updateInterview = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await InterviewService.updateInterview(req.params.id as string, req.body);
+    const userId = req.user!.id;
+    const result = await InterviewService.updateInterview(req.params.id as string, userId, req.body);
 
     res.status(200).json({
       success: true,
@@ -45,7 +76,8 @@ const updateInterview = async (req: Request, res: Response, next: NextFunction) 
 
 const deleteInterview = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await InterviewService.deleteInterview(req.params.id as string);
+    const userId = req.user!.id;
+    await InterviewService.deleteInterview(req.params.id as string, userId);
 
     res.status(200).json({
       success: true,
@@ -60,6 +92,8 @@ const deleteInterview = async (req: Request, res: Response, next: NextFunction) 
 export const InterviewController = {
   createInterview,
   getInterviewsByApplication,
+  getAllInterviews,
+  getInterviewById,
   updateInterview,
   deleteInterview,
 };

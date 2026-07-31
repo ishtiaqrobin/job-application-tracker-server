@@ -20,3 +20,11 @@ export interface UpdateInterviewInput {
   feedback?: string;
   result?: InterviewResult;
 }
+
+export interface InterviewQueryInput {
+  search?: string;
+  round?: InterviewRound;
+  result?: InterviewResult;
+  page?: number;
+  limit?: number;
+}

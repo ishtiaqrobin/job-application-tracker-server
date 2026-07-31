@@ -4,6 +4,7 @@ import { prisma } from "../../lib/prisma";
 import {
   CreateInterviewInput,
   UpdateInterviewInput,
+  InterviewQueryInput,
 } from "./interview.interface";
 
 const createInterview = async (payload: CreateInterviewInput) => {
@@ -40,8 +41,68 @@ const getInterviewsByApplication = async (jobApplicationId: string) => {
   return result;
 };
 
-const getInterviewById = async (id: string) => {
-  const result = await prisma.interview.findUnique({ where: { id } });
+const getAllInterviews = async (userId: string, query: InterviewQueryInput) => {
+  const { search, round, result } = query;
+
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 20;
+
+  const skip = (page - 1) * limit;
+
+  const applicationWhere: any = { userId };
+  if (search) {
+    applicationWhere.OR = [
+      { position: { contains: search, mode: "insensitive" } },
+      { companyNameSnapshot: { contains: search, mode: "insensitive" } },
+    ];
+  }
+
+  const where: any = {
+    ...(round && { round }),
+    ...(result && { result }),
+    jobApplication: { is: applicationWhere },
+  };
+
+  const [data, total] = await Promise.all([
+    prisma.interview.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { scheduledAt: "desc" },
+      include: {
+        jobApplication: {
+          select: {
+            id: true,
+            position: true,
+            companyNameSnapshot: true,
+            company: { select: { id: true, name: true } },
+          },
+        },
+      },
+    }),
+    prisma.interview.count({ where }),
+  ]);
+
+  return {
+    data,
+    meta: { page, limit, total, totalPages: Math.ceil(total / limit) },
+  };
+};
+
+const getInterviewById = async (id: string, userId: string) => {
+  const result = await prisma.interview.findFirst({
+    where: { id, jobApplication: { userId } },
+    include: {
+      jobApplication: {
+        select: {
+          id: true,
+          position: true,
+          companyNameSnapshot: true,
+          company: { select: { id: true, name: true } },
+        },
+      },
+    },
+  });
 
   if (!result) {
     throw new AppError(httpStatus.NOT_FOUND, "Interview not found");
@@ -50,8 +111,8 @@ const getInterviewById = async (id: string) => {
   return result;
 };
 
-const updateInterview = async (id: string, payload: UpdateInterviewInput) => {
-  await getInterviewById(id);
+const updateInterview = async (id: string, userId: string, payload: UpdateInterviewInput) => {
+  await getInterviewById(id, userId);
 
   const result = await prisma.interview.update({
     where: { id },
@@ -69,8 +130,8 @@ const updateInterview = async (id: string, payload: UpdateInterviewInput) => {
   return result;
 };
 
-const deleteInterview = async (id: string) => {
-  await getInterviewById(id);
+const deleteInterview = async (id: string, userId: string) => {
+  await getInterviewById(id, userId);
 
   await prisma.interview.delete({ where: { id } });
 };
@@ -78,6 +139,7 @@ const deleteInterview = async (id: string) => {
 export const InterviewService = {
   createInterview,
   getInterviewsByApplication,
+  getAllInterviews,
   getInterviewById,
   updateInterview,
   deleteInterview,

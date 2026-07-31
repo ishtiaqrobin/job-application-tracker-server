@@ -19,6 +19,10 @@ router.get(
   InterviewController.getInterviewsByApplication,
 );
 
+router.get("/", auth(UserRole.ADMIN, UserRole.USER), InterviewController.getAllInterviews);
+
+router.get("/:id", auth(UserRole.ADMIN, UserRole.USER), InterviewController.getInterviewById);
+
 router.patch(
   "/:id",
   auth(UserRole.ADMIN, UserRole.USER),
