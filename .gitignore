@@ -19,3 +19,5 @@ dist
 
 api/server.js
 api
+
+.vercel

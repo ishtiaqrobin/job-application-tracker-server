@@ -19,7 +19,7 @@ const createReminder = async (req: Request, res: Response, next: NextFunction) =
 const getAllReminders = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.user!.id;
-    const result = await ReminderService.getAllReminders(userId);
+    const result = await ReminderService.getAllReminders(userId, req.query as any);
 
     res.status(200).json({
       success: true,

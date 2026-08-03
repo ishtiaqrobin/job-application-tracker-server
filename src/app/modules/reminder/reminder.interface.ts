@@ -9,3 +9,10 @@ export interface UpdateReminderInput {
   remindAt?: string;
   isCompleted?: boolean;
 }
+
+export interface ReminderQueryInput {
+  search?: string;
+  isCompleted?: string;
+  page?: number;
+  limit?: number;
+}
